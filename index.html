@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title> Ask a Lawyer: Legal Dialogue RPG (雙語語音版)</title>
+  <title>Ask a Lawyer: Legal Dialogue RPG (雙語語音版)</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Lucide Icons -->
@@ -17,7 +17,7 @@
       color: #f8fafc;
     }
     .glass-card {
-      background: rgba(30, 41, 59, 0.75);
+      background: rgba(30, 41, 59, 0.85);
       backdrop-filter: blur(16px);
       border: 1px solid rgba(255, 255, 255, 0.12);
       box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
@@ -28,6 +28,9 @@
     @keyframes pulseGlow {
       0% { box-shadow: 0 0 15px rgba(99, 102, 241, 0.4); }
       100% { box-shadow: 0 0 30px rgba(99, 102, 241, 0.8); }
+    }
+    .progress-bar-glow {
+      box-shadow: 0 0 10px rgba(52, 211, 153, 0.5);
     }
   </style>
 </head>
@@ -41,7 +44,7 @@
           <i data-lucide="scale" class="w-6 h-6"></i>
         </div>
         <div>
-          <h1 class="font-bold text-lg text-white leading-tight">Ask a Lawyer <span class="text-xs bg-indigo-500/30 text-indigo-300 px-2 py-0.5 rounded border border-indigo-500/30">RPG 雙語語音版</span></h1>
+          <h1 class="font-bold text-lg text-white leading-tight">Ask a Lawyer <span class="text-xs bg-indigo-500/30 text-indigo-300 px-2 py-0.5 rounded border border-indigo-500/30">RPG 雙語語音延遲版</span></h1>
           <p class="text-xs text-slate-400">法務顧問：語言法庭對話實務</p>
         </div>
       </div>
@@ -90,7 +93,7 @@
         <i data-lucide="gavel" class="w-10 h-10"></i>
       </div>
       <h2 class="text-3xl font-bold text-white mb-2">正義法律事務所：語法對話對決</h2>
-      <p class="text-slate-300 mb-6 text-sm md:text-base">歡迎加入事務所！請運用 <span class="text-amber-400 font-semibold">間接問句、so that 目的子句、Here 倒裝句與使役動詞</span> 正確回覆委託人並完成法庭陳述。<br><span class="text-indigo-300 text-xs mt-1 block">🔊 本系統支援答題後自動美語語音朗讀完整句型 (Text-to-Speech)</span></p>
+      <p class="text-slate-300 mb-6 text-sm md:text-base">歡迎加入事務所！請運用 <span class="text-amber-400 font-semibold">間接問句、so that 目的子句、Here 倒裝句與使役動詞</span> 正確回覆委託人並完成法庭陳述。<br><span class="text-indigo-300 text-xs mt-2 block bg-indigo-950/60 p-2 rounded-lg border border-indigo-500/30">🔊 答題後自動進行美語語音朗讀，且<strong class="text-amber-400">朗讀完畢後停頓 2 秒</strong>方便對照與複習！</span></p>
 
       <div class="space-y-4 text-left mb-8 max-w-md mx-auto">
         <div>
@@ -115,7 +118,7 @@
       <!-- 進度列與主題卡 -->
       <div class="flex justify-between items-center text-xs text-slate-400">
         <span id="case-number-tag" class="bg-indigo-500/20 text-indigo-300 px-3 py-1 rounded-full border border-indigo-500/30 font-semibold">Case #1 / 8</span>
-        <span id="node-tag" class="text-amber-400">Node 01: 間接問句語序</span>
+        <span id="node-tag" class="text-amber-400 font-medium">Node 01: 間接問句語序</span>
       </div>
 
       <!-- 上方：委託人對話與情境圖片 -->
@@ -146,15 +149,25 @@
             </div>
           </div>
 
-          <!-- 語音朗讀與完整句型預覽卡 (答題後或手動朗讀) -->
-          <div id="sentence-speech-card" class="hidden bg-indigo-950/40 border border-indigo-500/40 p-3 rounded-xl flex items-center justify-between">
-            <div class="flex items-center space-x-2 text-indigo-200 text-xs md:text-sm">
-              <i data-lucide="volume-2" class="w-4 h-4 text-indigo-400 flex-shrink-0"></i>
-              <span id="full-sentence-text" class="font-medium">Please tell me what I should do in this situation.</span>
+          <!-- 語音朗讀與完整句型預覽卡 (含狀態標籤與 2 秒停頓指示) -->
+          <div id="sentence-speech-card" class="hidden bg-indigo-950/60 border border-indigo-500/50 p-3.5 rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 transition-all duration-300">
+            <div class="flex items-start space-x-2.5 text-indigo-200 text-xs md:text-sm">
+              <i data-lucide="volume-2" class="w-5 h-5 text-indigo-400 flex-shrink-0 mt-0.5"></i>
+              <div>
+                <p id="full-sentence-text" class="font-semibold text-white tracking-wide">Please tell me what I should do in this situation.</p>
+                <div class="flex items-center space-x-2 mt-1">
+                  <span id="speech-status-badge" class="inline-flex items-center text-[11px] font-bold px-2 py-0.5 rounded bg-indigo-500/30 text-indigo-300 border border-indigo-400/30">
+                    <i data-lucide="loader" class="w-3 h-3 animate-spin mr-1"></i> 準備朗讀中...
+                  </span>
+                  <span id="delay-timer-badge" class="hidden inline-flex items-center text-[11px] font-bold px-2 py-0.5 rounded bg-amber-500/30 text-amber-300 border border-amber-400/30">
+                    ⏱️ 停頓 2 秒觀察句型...
+                  </span>
+                </div>
+              </div>
             </div>
-            <button onclick="speakCurrentSentence()" class="px-2.5 py-1 bg-indigo-600 hover:bg-indigo-500 text-white text-xs rounded-lg transition flex items-center space-x-1 flex-shrink-0">
-              <i data-lucide="play" class="w-3 h-3"></i>
-              <span>朗讀</span>
+            <button onclick="speakCurrentSentenceManual()" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white text-xs rounded-lg transition flex items-center space-x-1 flex-shrink-0">
+              <i data-lucide="play" class="w-3.5 h-3.5"></i>
+              <span>手動朗讀</span>
             </button>
           </div>
         </div>
@@ -251,7 +264,7 @@
       <div id="hint-modal-content" class="text-sm text-slate-200 space-y-2 bg-slate-900/80 p-4 rounded-xl border border-slate-800">
         <!-- 提示內容 -->
       </div>
-      <button onclick="closeModal('modal-hint')" class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-lg text-xs font-semibold">了解，回到案情</button>
+      <button onclick="closeModal('modal-hint')" class="w-full py-2.5 bg-slate-800 hover:bg-slate-700 text-white rounded-lg text-xs font-semibold">了解，回到案情</button>
     </div>
   </div>
 
@@ -265,20 +278,21 @@
         <i data-lucide="key" class="w-6 h-6"></i>
         <h3 class="font-bold text-lg">Gemini API Key 設定</h3>
       </div>
-      <p class="text-xs text-slate-400">Canvas 環境預設可使用內建 Key；若欲在獨立環境運行 AI 助教，可於此處填入您的 API Key。</p>
+      <p class="text-xs text-slate-400">輸入 API Key 可解鎖動態 AI 助教指引與客製化法庭講評。</p>
       <input type="password" id="input-api-key" placeholder="AIzaSy..." class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-xs text-white focus:outline-none focus:border-indigo-500">
+      <div id="apikey-msg" class="hidden text-xs text-emerald-400 font-semibold">✓ Key 已儲存更新！</div>
       <button onclick="saveApiKey()" class="w-full py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-semibold">儲存 Key</button>
     </div>
   </div>
 
   <!-- 頁腳 -->
   <footer class="w-full text-center py-3 text-xs text-slate-500 border-t border-slate-800/50">
-    <p> Ask a Lawyer RPG • 108課綱技高英文 Choice (3) L4 句型整合小遊戲</p>
+    <p>Ask a Lawyer RPG • 108課綱技高英文 Choice (3) L4 句型整合小遊戲</p>
   </footer>
 
   <!-- 遊戲核心邏輯 JavaScript -->
   <script>
-    // 1. 結構化題庫資料集 (Based on Stage 2 Specifications)
+    // 1. 題庫資料集
     const QUESTIONS_DB = [
       {
         id: 1,
@@ -297,7 +311,6 @@
         explanationZh: "間接問句作為 tell 的受詞，需恢復為陳述句語序 (wh- + S + V)，助動詞 should 放在主詞 I 後面。",
         hint1: "Hint 1: 間接問句作為名詞子句時，必須使用陳述句語序 (S + V)。",
         hint2: "Hint 2: 直接問句 'what should I do' 改成間接問句時，I 與 should 位置要對調。",
-        imgKeyword: "lawyer legal advice",
         npcName: "Ms. Lin (委託人)",
         npcAvatarSeed: "lin"
       },
@@ -318,7 +331,6 @@
         explanationZh: "直接問句含助動詞 did 時，轉為間接問句須去除 did，主要動詞 see 需隨時態變為過去式 saw。",
         hint1: "Hint 1: 直接問句如有 do/does/did，變成間接問句時不保留助動詞。",
         hint2: "Hint 2: 去掉 did 後，請注意主要的動詞 see 必須改為過去式。",
-        imgKeyword: "court witness magnifying glass",
         npcName: "Mr. Chang (證人)",
         npcAvatarSeed: "chang"
       },
@@ -339,7 +351,6 @@
         explanationZh: "so that 為連接詞片語，後接完整子句 (you can...) 表示行動的目的（以便...才能...）。",
         hint1: "Hint 1: 空格後面是完整的子句 (you can take...)，需選擇能連接子句的連接詞。",
         hint2: "Hint 2: so as to 與 in order to 後面只能接原形動詞 (VR)，不能接子句。",
-        imgKeyword: "legal documents record",
         npcName: "Attorney Counsel (顧問律師)",
         npcAvatarSeed: "counsel"
       },
@@ -360,7 +371,6 @@
         explanationZh: "so + adv. + that 表示「如此...以致於...」，強調程度之大所導致的結果。",
         hint1: "Hint 1: 留意副詞 softly 的位置，此處在描述說話聲音輕柔的「程度」。",
         hint2: "Hint 2: so + adv. + that 連用表示結果；so that 放在一起才表示目的。",
-        imgKeyword: "courtroom jury microphone",
         npcName: "Prosecutor (檢察官)",
         npcAvatarSeed: "prosecutor"
       },
@@ -381,7 +391,6 @@
         explanationZh: "Here 開頭的倒裝句，be 動詞取決於後方的名詞 (two key steps 複數)，故使用 are。",
         hint1: "Hint 1: Here 開頭倒裝存在句，be 動詞由後面跟著的名詞單複數決定。",
         hint2: "Hint 2: 主詞為 two key steps (複數名詞)，應搭配複數 be 動詞。",
-        imgKeyword: "gavel judge table",
         npcName: "Court Clerk (法庭書記官)",
         npcAvatarSeed: "clerk"
       },
@@ -402,7 +411,6 @@
         explanationZh: "當 Here 句型的主詞為代名詞 (we) 時，不實施倒裝，維持「Here + 代名詞 + 動詞」。",
         hint1: "Hint 1: 若主詞為代名詞 (he, we, you)，倒裝句不對調順序。",
         hint2: "Hint 2: 保持標準順序：Here + 代名詞 + 動詞。",
-        imgKeyword: "handshake contract sign",
         npcName: "Judge (法官閣下)",
         npcAvatarSeed: "judge"
       },
@@ -423,8 +431,6 @@
         explanationZh: "make 作為使役動詞，基本句型為 make + 受詞 + 原形動詞 (VR)，不能加 to。",
         hint1: "Hint 1: make 為使役動詞，表示「使、讓某人做出某行為或感受」。",
         hint2: "Hint 2: 使役動詞 make/have/let + 受詞 + 原形動詞 (VR)。",
-        hint3: "解析：使役動詞句型 make + O + VR，不可加 to 或 ing。",
-        imgKeyword: "harassment scale justice",
         npcName: "Victim Representative (受害人代表)",
         npcAvatarSeed: "rep"
       },
@@ -437,15 +443,14 @@
         options: [
           "frustrated",
           "to frustrate",
-          "frustration",
-          "frustratingly"
+          "frustratingly",
+          "frustration"
         ],
         correctIndex: 0,
         fullSentence: "The noisy construction nearby makes me frustrated every single night.",
         explanationZh: "make + 受詞 + 補語 (adj.) 描述讓受詞處於某種心理狀態，描述人的感受用 -ed 形容詞。",
         hint1: "Hint 1: make 的另一個句型為 make + 受詞 + 形容詞 (補語)。",
         hint2: "Hint 2: 描述「人的情緒或心理感受」需使用過去分詞轉化的形容詞 (frustrated)。",
-        imgKeyword: "noise traffic stress",
         npcName: "Resident (社區居民)",
         npcAvatarSeed: "resident"
       }
@@ -457,8 +462,8 @@
       currentIdx: 0,
       hp: 100,
       combo: 0,
-      answersHistory: [], // 紀錄每題答題狀態
-      wrongCountMap: {},  // 題號 -> 錯誤次數
+      answersHistory: [],
+      wrongCountMap: {},
       ttsEnabled: true,
       soundEnabled: true,
       userApiKey: "",
@@ -495,14 +500,76 @@
       } catch (e) { console.log('Audio Context Play Error', e); }
     }
 
-    // 4. Web Speech API 語音朗讀 (Text-to-Speech)
-    function speakText(text) {
-      if (!('speechSynthesis' in window) || !gameState.ttsEnabled) return;
-      window.speechSynthesis.cancel(); // 停止先前的朗讀
-      const utterance = new SpeechSynthesisUtterance(text);
+    // 4. Web Speech API 語音朗讀 (含 exact 2-second delay 控制)
+    function speakTextAndPause(text, pauseMs = 2000) {
+      return new Promise((resolve) => {
+        const speechStatusBadge = document.getElementById('speech-status-badge');
+        const delayTimerBadge = document.getElementById('delay-timer-badge');
+
+        // 如果未開啟 TTS 或瀏覽器不支援
+        if (!('speechSynthesis' in window) || !gameState.ttsEnabled) {
+          if (speechStatusBadge) {
+            speechStatusBadge.innerHTML = `<i data-lucide="volume-x" class="w-3 h-3 mr-1"></i> 靜音模式`;
+          }
+          if (delayTimerBadge) {
+            delayTimerBadge.classList.remove('hidden');
+            delayTimerBadge.innerHTML = `⏱️ 閱讀句型中 (2秒後跳轉)...`;
+          }
+          lucide.createIcons();
+          setTimeout(() => resolve(), pauseMs);
+          return;
+        }
+
+        window.speechSynthesis.cancel(); // 停止舊語音
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'en-US';
+        utterance.rate = 0.88; // 美語清亮語速
+        utterance.pitch = 1.0;
+
+        let hasResolved = false;
+
+        const startDelayPhase = () => {
+          if (hasResolved) return;
+          if (speechStatusBadge) {
+            speechStatusBadge.innerHTML = `<i data-lucide="check-circle" class="w-3 h-3 text-emerald-400 mr-1"></i> 朗讀完畢`;
+          }
+          if (delayTimerBadge) {
+            delayTimerBadge.classList.remove('hidden');
+            delayTimerBadge.innerHTML = `⏱️ 停頓 2 秒看清完整句子...`;
+          }
+          lucide.createIcons();
+
+          setTimeout(() => {
+            hasResolved = true;
+            resolve();
+          }, pauseMs);
+        };
+
+        if (speechStatusBadge) {
+          speechStatusBadge.innerHTML = `<i data-lucide="loader" class="w-3 h-3 animate-spin mr-1"></i> 語音朗讀中...`;
+        }
+        if (delayTimerBadge) delayTimerBadge.classList.add('hidden');
+        lucide.createIcons();
+
+        utterance.onend = startDelayPhase;
+        utterance.onerror = startDelayPhase;
+
+        // 保底逾時觸發 (避免某些瀏覽器語音 hang 住)
+        setTimeout(() => {
+          startDelayPhase();
+        }, 7000);
+
+        window.speechSynthesis.speak(utterance);
+      });
+    }
+
+    function speakCurrentSentenceManual() {
+      const q = QUESTIONS_DB[gameState.currentIdx];
+      if (!('speechSynthesis' in window)) return;
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(q.fullSentence);
       utterance.lang = 'en-US';
-      utterance.rate = 0.88; // 稍微放慢以提高英文清晰度
-      utterance.pitch = 1.0;
+      utterance.rate = 0.88;
       window.speechSynthesis.speak(utterance);
     }
 
@@ -531,31 +598,30 @@
       gameState.isAnsweredCurrent = false;
       const q = QUESTIONS_DB[idx];
 
-      // 更新頂部 HUD
+      // 更新 HUD
       document.getElementById('case-number-tag').textContent = `Case #${q.id} / ${QUESTIONS_DB.length}`;
       document.getElementById('node-tag').textContent = `${q.nodeId}: ${q.nodeName}`;
 
-      // 隱藏語音卡片
+      // 重置語音提示卡
       document.getElementById('sentence-speech-card').classList.add('hidden');
+      document.getElementById('delay-timer-badge').classList.add('hidden');
 
-      // 更新 NPC 資訊與 DiceBear Avatar
+      // 更新 NPC Avatar
       document.getElementById('npc-name').textContent = q.npcName;
       const avatarUrl = `https://api.dicebear.com/9.x/bottts/svg?seed=${q.npcAvatarSeed}&backgroundColor=0f172a`;
       const npcImg = document.getElementById('npc-avatar');
       npcImg.src = avatarUrl;
       npcImg.onerror = () => handleImgError(npcImg, q.npcName);
 
-      // 更新雙語對話與英文挖空句
+      // 更新對話
       document.getElementById('dialogue-zh').textContent = q.dialogueZh;
       document.getElementById('dialogue-en-prompt').innerHTML = q.promptEn.replace('[ ? ]', '<span class="text-amber-400 underline decoration-wavy font-bold">[ ? ]</span>');
 
-      // 動態渲染 4 大對話選項
+      // 動態渲染對話選項
       const grid = document.getElementById('options-grid');
       grid.innerHTML = '';
       
-      // 打亂選項順序但保留正確索引
       let optionsWithOrigIdx = q.options.map((opt, i) => ({ opt, isCorrect: i === q.correctIndex }));
-      // 隨機洗牌
       optionsWithOrigIdx.sort(() => Math.random() - 0.5);
 
       optionsWithOrigIdx.forEach((item, index) => {
@@ -575,66 +641,53 @@
       lucide.createIcons();
     }
 
-    // 7. 選項選擇邏輯
-    function selectOption(btnElement, isCorrect, q) {
+    // 7. 選項選擇邏輯 (答對/答錯皆於朗讀後停頓 2 秒再切換)
+    async function selectOption(btnElement, isCorrect, q) {
       if (gameState.isAnsweredCurrent) return;
       gameState.isAnsweredCurrent = true;
 
-      // 禁用所有按鈕
+      // 禁用選項按鈕
       const allBtns = document.querySelectorAll('.option-btn');
       allBtns.forEach(b => b.disabled = true);
 
-      // 顯示完整英文句子與朗讀卡片
+      // 填補情境中的答案挖空
+      document.getElementById('dialogue-en-prompt').innerHTML = q.promptEn.replace('[ ? ]', `<span class="${isCorrect ? 'text-emerald-400 font-bold underline' : 'text-rose-400 font-bold underline'}">${q.options[q.correctIndex]}</span>`);
+
+      // 顯示完整英文句子卡
       const speechCard = document.getElementById('sentence-speech-card');
       document.getElementById('full-sentence-text').textContent = q.fullSentence;
       speechCard.classList.remove('hidden');
 
       if (isCorrect) {
-        // 答對處理
         btnElement.classList.remove('bg-slate-800/90', 'border-slate-700');
         btnElement.classList.add('bg-emerald-900/60', 'border-emerald-500', 'text-emerald-200');
         playAudioTone('correct');
 
         gameState.combo += 1;
         document.getElementById('combo-count').textContent = gameState.combo;
-
         gameState.answersHistory.push({ id: q.id, nodeId: q.nodeId, correct: true });
 
-        // 朗讀完整句型
-        speakText(q.fullSentence);
-
-        setTimeout(() => {
-          nextQuestion();
-        }, 2600);
+        // 朗讀完畢 -> 停頓 2 秒 -> 切換下一題
+        await speakTextAndPause(q.fullSentence, 2000);
+        nextQuestion();
 
       } else {
-        // 答錯處理
         btnElement.classList.remove('bg-slate-800/90', 'border-slate-700');
         btnElement.classList.add('bg-rose-900/60', 'border-rose-500', 'text-rose-200');
         playAudioTone('wrong');
 
         gameState.combo = 0;
         document.getElementById('combo-count').textContent = 0;
-
         gameState.hp = Math.max(0, gameState.hp - 15);
         document.getElementById('hp-bar').style.width = `${gameState.hp}%`;
 
         gameState.wrongCountMap[q.id] = (gameState.wrongCountMap[q.id] || 0) + 1;
         gameState.answersHistory.push({ id: q.id, nodeId: q.nodeId, correct: false });
 
-        // 朗讀完整正確句子（作為強化記憶）
-        speakText(q.fullSentence);
-
-        // 自動彈出鷹架提示
-        setTimeout(() => {
-          showScaffoldModal(q);
-        }, 1200);
+        // 朗讀完畢 -> 停頓 2 秒 -> 跳出鷹架提示
+        await speakTextAndPause(q.fullSentence, 2000);
+        showScaffoldModal(q);
       }
-    }
-
-    function speakCurrentSentence() {
-      const q = QUESTIONS_DB[gameState.currentIdx];
-      speakText(q.fullSentence);
     }
 
     function nextQuestion() {
@@ -651,9 +704,9 @@
       let hintContent = "";
 
       if (wrongTimes === 1) {
-        hintContent = `<p class="font-bold text-amber-300">${q.hint1}</p><p class="text-xs text-slate-400 mt-2">提示解構：請關注句型關鍵位置與助動詞語序。</p>`;
+        hintContent = `<p class="font-bold text-amber-300 text-base mb-2">${q.hint1}</p><p class="text-xs text-slate-300 bg-slate-950 p-3 rounded-lg border border-slate-800 leading-relaxed">${q.explanationZh}</p>`;
       } else {
-        hintContent = `<p class="font-bold text-amber-300">${q.hint2}</p><p class="text-xs text-slate-300 mt-2">${q.explanationZh}</p>`;
+        hintContent = `<p class="font-bold text-amber-300 text-base mb-2">${q.hint2}</p><p class="text-xs text-slate-300 bg-slate-950 p-3 rounded-lg border border-slate-800 leading-relaxed">${q.explanationZh}</p>`;
       }
 
       document.getElementById('hint-modal-content').innerHTML = hintContent;
@@ -676,14 +729,12 @@
     function showReportScreen() {
       document.getElementById('screen-play').classList.add('hidden');
       document.getElementById('screen-report').classList.remove('hidden');
-
       document.getElementById('cert-player-name').textContent = gameState.playerName;
 
       const correctTotal = gameState.answersHistory.filter(a => a.correct).length;
       const winRate = Math.round((correctTotal / QUESTIONS_DB.length) * 100);
-      document.getElementById('final-score-badge').textContent = `勝訴率: ${winRate}% (正確率)`;
+      document.getElementById('final-score-badge').textContent = `勝訴率: ${winRate}%`;
 
-      // 知識點診斷渲染
       const masteryList = document.getElementById('mastery-list');
       masteryList.innerHTML = '';
       QUESTIONS_DB.forEach(q => {
@@ -692,7 +743,7 @@
         const statusClass = isWrong ? 'bg-amber-500/20 text-amber-300 border-amber-500/30' : 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30';
         
         const item = document.createElement('div');
-        item.className = 'flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800';
+        item.className = 'flex justify-between items-center bg-slate-900/60 p-2.5 rounded border border-slate-800';
         item.innerHTML = `
           <span class="text-slate-300 font-medium">${q.nodeId} ${q.nodeName}</span>
           <span class="px-2 py-0.5 rounded text-[10px] font-bold border ${statusClass}">${statusText}</span>
@@ -700,17 +751,16 @@
         masteryList.appendChild(item);
       });
 
-      // 自動呼叫 API 講評（若有 Key 或自動產生評語）
       generateAIEvaluation(winRate);
     }
 
-    // 10. Gemini API 助教與講評整合
+    // 10. Gemini API 助教與講評
     async function callGeminiAITutor() {
       const q = QUESTIONS_DB[gameState.currentIdx];
-      const systemInstruction = "你是一位親切專業的正義事務所首席律師。請針對學生的英文文法盲點，給予50字內的蘇格拉底引導式提示，不要直接給出最終答案。";
-      const userPrompt = `學生目前在回答題目："${q.promptEn}"。選項為：${q.options.join(', ')}。請用溫暖有專業感的語氣給予法務引導。`;
+      const systemInstruction = "你是一位親切專業的正義事務所首席律師。請針對學生的英文文法盲點，給予50字內的蘇格拉底引導式提示，不要直接給出答案。";
+      const userPrompt = `學生正在回答："${q.promptEn}"。選項為：${q.options.join(', ')}。請給予引導。`;
 
-      document.getElementById('hint-modal-content').innerHTML = `<p class="text-indigo-400 font-semibold flex items-center"><i data-lucide="loader-2" class="w-4 h-4 animate-spin mr-2"></i> 首席律師思考中...</p>`;
+      document.getElementById('hint-modal-content').innerHTML = `<p class="text-indigo-400 font-semibold flex items-center"><i data-lucide="loader" class="w-4 h-4 animate-spin mr-2"></i> 首席律師思考中...</p>`;
       document.getElementById('modal-hint').classList.remove('hidden');
       lucide.createIcons();
 
@@ -727,7 +777,7 @@
       evalBox.classList.remove('hidden');
       const textElem = document.getElementById('ai-evaluation-text');
 
-      const systemInstruction = "你是一位讚賞實習法務表現的首席律師，請用兩句話評語讚賞學生的法庭句型表現並給予祝福。";
+      const systemInstruction = "你是一位讚賞實習法務表現的首席律師，請用兩句話評語讚賞學生的法庭句型表現。";
       const userPrompt = `實習律師 ${gameState.playerName} 完成了 8 大英文法律諮詢任務，勝訴率為 ${winRate}%。`;
 
       const aiText = await fetchGeminiAPI(systemInstruction, userPrompt);
@@ -739,8 +789,8 @@
     }
 
     async function fetchGeminiAPI(systemInstruction, userPrompt) {
-      const apiKey = window.USER_API_KEY || "";
-      if (!apiKey) return null; // 離線則返回 null 觸發降級
+      const apiKey = gameState.userApiKey || window.USER_API_KEY || "";
+      if (!apiKey) return null;
 
       const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
       try {
@@ -760,7 +810,7 @@
       }
     }
 
-    // 11. 輔助控制函式
+    // 11. 輔助控制
     function toggleTTS() {
       gameState.ttsEnabled = !gameState.ttsEnabled;
       document.getElementById('tts-icon').className = gameState.ttsEnabled ? "w-5 h-5 text-indigo-400" : "w-5 h-5 text-slate-500";
@@ -773,13 +823,18 @@
 
     function openApiKeyModal() {
       document.getElementById('modal-apikey').classList.remove('hidden');
+      document.getElementById('apikey-msg').classList.add('hidden');
     }
 
     function saveApiKey() {
       const key = document.getElementById('input-api-key').value.trim();
+      gameState.userApiKey = key;
       window.USER_API_KEY = key;
-      closeModal('modal-apikey');
-      alert('API Key 已更新！');
+      const msg = document.getElementById('apikey-msg');
+      msg.classList.remove('hidden');
+      setTimeout(() => {
+        closeModal('modal-apikey');
+      }, 1000);
     }
 
     function handleImgError(imgElement, fallbackTitle) {
